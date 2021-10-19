@@ -11,7 +11,12 @@ import java.util.concurrent.TimeUnit;
 public class GameArena extends SimpleBukkitArena {
     public GameArena(String name, ArenaManager arenaManager) {
         super(name, arenaManager);
+    }
+
+    @Override
+    public void init() {
         getArenaFeature(CooldownFeature.class).start(MainConfig.TIME_WAITING.getValue(), TimeUnit.SECONDS);
         setState(WaitingState.class);
+        super.init();
     }
 }
