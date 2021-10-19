@@ -1,0 +1,8 @@
+name: KingOfTheHill
+version: '${project.version}'
+main: me.hsgamer.kingofthehill.KingOfTheHill
+api-version: 1.13
+softdepend:
+  - PlaceholderAPI
+  - HolographicDisplays
+authors: [ HSGamer ]
