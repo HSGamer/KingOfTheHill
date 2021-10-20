@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.*;
 
 public class RewardManager {
-    private final Map<Integer, List<String>> topCommands = new IdentityHashMap<>();
+    private final Map<Integer, List<String>> topCommands = new HashMap<>();
     private final List<String> defaultCommands = new ArrayList<>();
 
     public static RewardManager deserialize(Map<String, Object> value) {
