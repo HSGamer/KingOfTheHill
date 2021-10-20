@@ -20,6 +20,7 @@ public class InGameState implements GameState {
             String endMessage = MessageConfig.END_BROADCAST.getValue().replace("{name}", arena.getName());
             Bukkit.getOnlinePlayers().forEach(player -> MessageUtils.sendMessage(player, endMessage));
             arena.setState(EndingState.class);
+            return;
         }
         BoundingFeature.ArenaBoundingFeature boundingFeature = arena.getArenaFeature(BoundingFeature.class);
         PointFeature.ArenaPointFeature pointFeature = arena.getArenaFeature(PointFeature.class);
