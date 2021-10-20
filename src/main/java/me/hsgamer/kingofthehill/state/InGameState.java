@@ -24,15 +24,14 @@ public class InGameState implements GameState {
         BoundingFeature.ArenaBoundingFeature boundingFeature = arena.getArenaFeature(BoundingFeature.class);
         PointFeature.ArenaPointFeature pointFeature = arena.getArenaFeature(PointFeature.class);
         pointFeature.resetPointIfNotOnline();
-        Bukkit.getOnlinePlayers().parallelStream()
-                .forEach(player -> {
-                    UUID uuid = player.getUniqueId();
-                    if (boundingFeature.checkBounding(uuid)) {
-                        pointFeature.addPoint(uuid);
-                    } else {
-                        pointFeature.takePoint(uuid);
-                    }
-                });
+        Bukkit.getOnlinePlayers().parallelStream().forEach(player -> {
+            UUID uuid = player.getUniqueId();
+            if (boundingFeature.checkBounding(uuid)) {
+                pointFeature.addPoint(uuid);
+            } else {
+                pointFeature.takePoint(uuid);
+            }
+        });
     }
 
     @Override
