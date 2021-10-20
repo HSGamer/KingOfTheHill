@@ -14,6 +14,8 @@ public class MessageConfig extends PathableConfig {
     public static final StringConfigPath STATE_WAITING = new StringConfigPath("state.waiting", "&eWAITING");
     public static final StringConfigPath STATE_INGAME = new StringConfigPath("state.in-game", "&aIN GAME");
     public static final StringConfigPath STATE_ENDING = new StringConfigPath("state.ending", "&cENDING");
+    public static final StringConfigPath ARENA_NOT_FOUND = new StringConfigPath("arena-not-found", "&cThe arena is not found");
+    public static final StringConfigPath SUCCESS = new StringConfigPath("success", "&aSuccess");
     public static final StringConfigPath TIME_FORMAT = new StringConfigPath("time-format", "HH:mm:ss");
 
     public MessageConfig(Plugin plugin) {

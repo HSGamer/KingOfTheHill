@@ -5,6 +5,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.kingofthehill.arena.GameArena;
+import me.hsgamer.kingofthehill.command.AdminCommand;
 import me.hsgamer.kingofthehill.config.ArenaConfig;
 import me.hsgamer.kingofthehill.config.MainConfig;
 import me.hsgamer.kingofthehill.config.MessageConfig;
@@ -41,6 +42,7 @@ public final class KingOfTheHill extends BasePlugin {
     public void enable() {
         arenaManager.init();
         rewardManager = MainConfig.REWARD.getValue();
+        registerCommand(new AdminCommand(this));
     }
 
     @Override
