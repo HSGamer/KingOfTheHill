@@ -48,13 +48,13 @@ public class GameArenaManager extends ArenaManager {
                 .map(arena -> arena.getArenaFeature(CooldownFeature.class))
                 .map(feature -> feature.get(TimeUnit.MILLISECONDS))
                 .map(millis -> DurationFormatUtils.formatDuration(millis, MessageConfig.TIME_FORMAT.getValue()))
-                .orElse(null);
+                .orElse("");
     }
 
     public String getArenaState(String arenaName) {
         return instance.getArenaManager().getArenaByName(arenaName)
                 .flatMap(Arena::getStateInstance)
                 .map(GameState::getDisplayName)
-                .orElse(null);
+                .orElse("");
     }
 }
