@@ -1,7 +1,6 @@
 package me.hsgamer.kingofthehill.state;
 
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
-import me.hsgamer.kingofthehill.config.MainConfig;
 import me.hsgamer.kingofthehill.config.MessageConfig;
 import me.hsgamer.kingofthehill.feature.CooldownFeature;
 import me.hsgamer.minigamecore.base.Arena;
@@ -17,8 +16,8 @@ public class WaitingState implements GameState {
         if (cooldown <= 0) {
             String startMessage = MessageConfig.START_BROADCAST.getValue().replace("{name}", arena.getName());
             Bukkit.getOnlinePlayers().forEach(player -> MessageUtils.sendMessage(player, startMessage));
-            arena.getArenaFeature(CooldownFeature.class).start(MainConfig.TIME_IN_GAME.getValue(), TimeUnit.SECONDS);
             arena.setState(InGameState.class);
+            arena.getArenaFeature(CooldownFeature.class).start(arena.getState());
         }
     }
 

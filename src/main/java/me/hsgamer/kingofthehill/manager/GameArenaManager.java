@@ -38,7 +38,7 @@ public class GameArenaManager extends ArenaManager {
     protected List<Feature> loadFeatures() {
         return Arrays.asList(
                 new PointFeature(instance),
-                new CooldownFeature(),
+                new CooldownFeature(instance),
                 new BoundingFeature(instance)
         );
     }
