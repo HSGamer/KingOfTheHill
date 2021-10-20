@@ -1,7 +1,6 @@
 package me.hsgamer.kingofthehill.state;
 
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
-import me.hsgamer.kingofthehill.config.MainConfig;
 import me.hsgamer.kingofthehill.config.MessageConfig;
 import me.hsgamer.kingofthehill.feature.BoundingFeature;
 import me.hsgamer.kingofthehill.feature.CooldownFeature;
@@ -22,8 +21,6 @@ public class InGameState implements GameState {
             Bukkit.getOnlinePlayers().forEach(player -> MessageUtils.sendMessage(player, endMessage));
             arena.setState(EndingState.class);
         }
-        int pointAdd = MainConfig.POINT_ADD.getValue();
-        int pointMinus = MainConfig.POINT_MINUS.getValue();
         BoundingFeature.ArenaBoundingFeature boundingFeature = arena.getArenaFeature(BoundingFeature.class);
         PointFeature.ArenaPointFeature pointFeature = arena.getArenaFeature(PointFeature.class);
         pointFeature.resetPointIfNotOnline();
@@ -31,14 +28,9 @@ public class InGameState implements GameState {
                 .forEach(player -> {
                     UUID uuid = player.getUniqueId();
                     if (boundingFeature.checkBounding(uuid)) {
-                        MessageUtils.sendMessage(player, MessageConfig.POINT_ADD.getValue().replace("{point}", Integer.toString(pointAdd)));
-                        pointFeature.addPoint(uuid, pointAdd);
-                    } else if (pointMinus > 0) {
-                        int currentPoint = pointFeature.getPoint(uuid);
-                        if (currentPoint > 0) {
-                            MessageUtils.sendMessage(player, MessageConfig.POINT_MINUS.getValue().replace("{point}", Integer.toString(Math.min(currentPoint, pointMinus))));
-                            pointFeature.takePoint(uuid, pointMinus);
-                        }
+                        pointFeature.addPoint(uuid);
+                    } else {
+                        pointFeature.takePoint(uuid);
                     }
                 });
     }
