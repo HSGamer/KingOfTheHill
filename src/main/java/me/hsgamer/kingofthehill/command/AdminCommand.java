@@ -12,20 +12,21 @@ import java.util.Collections;
 import java.util.List;
 
 public class AdminCommand extends Command {
-    private final SubCommandManager subCommandManager = new SubCommandManager() {
-        @Override
-        public void sendHelpMessage(@NotNull CommandSender sender, @NotNull String label, @NotNull String... args) {
-            getSubcommands().forEach((name, subCommand) -> MessageUtils.sendMessage(sender, "&f/" + label + " " + name + ": &e" + subCommand.getDescription()));
-        }
-
-        @Override
-        public void sendArgNotFoundMessage(@NotNull CommandSender sender, @NotNull String label, @NotNull String... args) {
-            MessageUtils.sendMessage(sender, "&cInvalid Arguments");
-        }
-    };
+    private final SubCommandManager subCommandManager;
 
     public AdminCommand(KingOfTheHill instance) {
         super("kothadmin", "Admin Command", "/kothadmin", Collections.emptyList());
+        subCommandManager = new SubCommandManager() {
+            @Override
+            public void sendHelpMessage(@NotNull CommandSender sender, @NotNull String label, @NotNull String... args) {
+                getSubcommands().forEach((name, subCommand) -> MessageUtils.sendMessage(sender, "&f/" + label + " " + name + ": &e" + subCommand.getDescription()));
+            }
+
+            @Override
+            public void sendArgNotFoundMessage(@NotNull CommandSender sender, @NotNull String label, @NotNull String... args) {
+                MessageUtils.sendMessage(sender, "&cInvalid Arguments");
+            }
+        };
         subCommandManager.registerSubcommand(new SkipTimeCommand(instance));
     }
 

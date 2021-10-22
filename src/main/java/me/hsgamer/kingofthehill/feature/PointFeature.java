@@ -8,7 +8,10 @@ import me.hsgamer.kingofthehill.config.MessageConfig;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.ArenaFeature;
 import me.hsgamer.minigamecore.base.Feature;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,20 +43,34 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
         }
 
         public void addPoint(UUID uuid) {
-            MessageUtils.sendMessage(uuid, MessageConfig.POINT_ADD.getValue().replace("{point}", Integer.toString(pointAdd)));
             points.merge(uuid, pointAdd, Integer::sum);
+            sendActionBar(uuid, MessageConfig.POINT_ADD.getValue()
+                    .replace("{point}", Integer.toString(pointAdd))
+                    .replace("{total}", Integer.toString(getPoint(uuid)))
+            );
         }
 
         public void takePoint(UUID uuid) {
             if (pointMinus > 0) {
                 int currentPoint = getPoint(uuid);
                 if (currentPoint > 0) {
-                    MessageUtils.sendMessage(uuid, MessageConfig.POINT_MINUS.getValue().replace("{point}", Integer.toString(Math.min(currentPoint, pointMinus))));
-                    points.put(uuid, Math.max(0, getPoint(uuid) - pointMinus));
+                    points.put(uuid, Math.max(0, currentPoint - pointMinus));
+                    sendActionBar(uuid, MessageConfig.POINT_MINUS.getValue()
+                            .replace("{point}", Integer.toString(Math.min(currentPoint, pointMinus)))
+                            .replace("{total}", Integer.toString(getPoint(uuid)))
+                    );
                 }
             }
         }
 
+        private void sendActionBar(UUID uuid, String message) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) {
+                return;
+            }
+            message = MessageUtils.colorize(message);
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
+        }
 
         public int getPoint(UUID uuid) {
             return points.getOrDefault(uuid, 0);
