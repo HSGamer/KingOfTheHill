@@ -27,7 +27,7 @@ public class InGameState implements GameState {
         pointFeature.resetPointIfNotOnline();
         Bukkit.getOnlinePlayers().parallelStream().forEach(player -> {
             UUID uuid = player.getUniqueId();
-            if (boundingFeature.checkBounding(uuid)) {
+            if (!player.isDead() && boundingFeature.checkBounding(uuid)) {
                 pointFeature.addPoint(uuid);
             } else {
                 pointFeature.takePoint(uuid);
