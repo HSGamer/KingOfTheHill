@@ -77,7 +77,7 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
 
         public void resetPointIfNotOnline() {
             points.keySet().stream()
-                    .filter(uuid -> Bukkit.getPlayer(uuid) != null)
+                    .filter(uuid -> Bukkit.getPlayer(uuid) == null)
                     .collect(Collectors.toList())
                     .forEach(points::remove);
         }
