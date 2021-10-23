@@ -4,12 +4,10 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
-import me.hsgamer.kingofthehill.arena.GameArena;
 import me.hsgamer.kingofthehill.command.AdminCommand;
 import me.hsgamer.kingofthehill.config.ArenaConfig;
 import me.hsgamer.kingofthehill.config.MainConfig;
 import me.hsgamer.kingofthehill.config.MessageConfig;
-import me.hsgamer.kingofthehill.feature.BoundingFeature;
 import me.hsgamer.kingofthehill.manager.GameArenaManager;
 import me.hsgamer.kingofthehill.manager.RewardManager;
 import org.bukkit.Bukkit;
@@ -20,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
 
 public final class KingOfTheHill extends BasePlugin {
     private final MainConfig mainConfig = new MainConfig(this);
@@ -47,17 +44,6 @@ public final class KingOfTheHill extends BasePlugin {
 
     @Override
     public void postEnable() {
-        arenaConfig.getKeys(false).forEach(name -> {
-            GameArena arena = new GameArena(name, arenaManager);
-            try {
-                arena.getArenaFeature(BoundingFeature.class);
-            } catch (Exception e) {
-                getLogger().log(Level.WARNING, e, () -> "Cannot add arena '" + name + "'");
-                return;
-            }
-            arenaManager.addArena(arena);
-        });
-
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             KingOfTheHill instance = this;
             PlaceholderExpansion expansion = new PlaceholderExpansion() {

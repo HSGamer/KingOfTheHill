@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class WaitingState implements GameState {
     @Override
     public void handle(Arena arena) {
-        long cooldown = arena.getArenaFeature(CooldownFeature.class).get(TimeUnit.SECONDS);
+        long cooldown = arena.getArenaFeature(CooldownFeature.class).getDuration(TimeUnit.SECONDS);
         if (cooldown <= 0) {
             String startMessage = MessageConfig.START_BROADCAST.getValue().replace("{name}", arena.getName());
             Bukkit.getOnlinePlayers().forEach(player -> MessageUtils.sendMessage(player, startMessage));

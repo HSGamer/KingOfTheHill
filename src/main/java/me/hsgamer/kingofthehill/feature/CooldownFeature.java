@@ -6,14 +6,11 @@ import me.hsgamer.kingofthehill.state.InGameState;
 import me.hsgamer.kingofthehill.state.WaitingState;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.ArenaFeature;
-import me.hsgamer.minigamecore.base.Feature;
 import me.hsgamer.minigamecore.base.GameState;
+import me.hsgamer.minigamecore.implementation.feature.TimerFeature;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-
-import static java.lang.System.currentTimeMillis;
 
 public class CooldownFeature extends ArenaFeature<CooldownFeature.ArenaCooldownFeature> {
     private final KingOfTheHill instance;
@@ -40,8 +37,7 @@ public class CooldownFeature extends ArenaFeature<CooldownFeature.ArenaCooldownF
         return new ArenaCooldownFeature(waitingTime, ingameTime, timeUnit);
     }
 
-    public static class ArenaCooldownFeature implements Feature {
-        public final AtomicLong cooldown = new AtomicLong(currentTimeMillis());
+    public static class ArenaCooldownFeature extends TimerFeature {
         private final long waitingTime;
         private final long ingameTime;
         private final TimeUnit timeUnit;
@@ -52,30 +48,12 @@ public class CooldownFeature extends ArenaFeature<CooldownFeature.ArenaCooldownF
             this.timeUnit = timeUnit;
         }
 
-        public long get(TimeUnit timeUnit) {
-            long currentTime = currentTimeMillis();
-            long endTime = cooldown.get();
-            long duration = Math.max(0, endTime - currentTime);
-            return timeUnit.convert(duration, TimeUnit.MILLISECONDS);
-        }
-
-        public void start(long duration, TimeUnit timeUnit) {
-            long durationMillis = timeUnit.toMillis(duration);
-            long currentTime = currentTimeMillis();
-            cooldown.lazySet(currentTime + durationMillis);
-        }
-
         public void start(Class<? extends GameState> stateClass) {
             if (stateClass == WaitingState.class) {
-                start(waitingTime, timeUnit);
+                setDuration(waitingTime, timeUnit);
             } else if (stateClass == InGameState.class) {
-                start(ingameTime, timeUnit);
+                setDuration(ingameTime, timeUnit);
             }
-        }
-
-        @Override
-        public void clear() {
-            cooldown.lazySet(0);
         }
     }
 }

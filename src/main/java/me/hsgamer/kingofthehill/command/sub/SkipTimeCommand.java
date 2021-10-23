@@ -28,7 +28,7 @@ public class SkipTimeCommand extends SubCommand {
     public void onSubCommand(@NotNull CommandSender sender, @NotNull String label, @NotNull String... args) {
         Optional<Arena> optionalArena = instance.getArenaManager().getArenaByName(args[0]);
         if (optionalArena.isPresent()) {
-            optionalArena.get().getArenaFeature(CooldownFeature.class).start(5, TimeUnit.MILLISECONDS);
+            optionalArena.get().getArenaFeature(CooldownFeature.class).setDuration(5, TimeUnit.MILLISECONDS);
             MessageUtils.sendMessage(sender, MessageConfig.SUCCESS.getValue());
         } else {
             MessageUtils.sendMessage(sender, MessageConfig.ARENA_NOT_FOUND.getValue());
