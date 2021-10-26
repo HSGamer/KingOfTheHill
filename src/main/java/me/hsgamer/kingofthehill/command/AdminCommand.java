@@ -3,6 +3,7 @@ package me.hsgamer.kingofthehill.command;
 import me.hsgamer.hscore.bukkit.subcommand.SubCommandManager;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.kingofthehill.KingOfTheHill;
+import me.hsgamer.kingofthehill.command.sub.ReloadCommand;
 import me.hsgamer.kingofthehill.command.sub.SkipTimeCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -28,6 +29,7 @@ public class AdminCommand extends Command {
             }
         };
         subCommandManager.registerSubcommand(new SkipTimeCommand(instance));
+        subCommandManager.registerSubcommand(new ReloadCommand(instance));
     }
 
     @Override
