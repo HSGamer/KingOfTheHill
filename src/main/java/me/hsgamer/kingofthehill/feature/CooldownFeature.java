@@ -1,5 +1,8 @@
 package me.hsgamer.kingofthehill.feature;
 
+import com.cronutils.model.CronType;
+import me.hsgamer.hscore.common.CollectionUtils;
+import me.hsgamer.hscore.crontime.CronTimeManager;
 import me.hsgamer.kingofthehill.KingOfTheHill;
 import me.hsgamer.kingofthehill.config.ArenaConfig;
 import me.hsgamer.kingofthehill.state.InGameState;
@@ -9,8 +12,11 @@ import me.hsgamer.minigamecore.base.ArenaFeature;
 import me.hsgamer.minigamecore.base.GameState;
 import me.hsgamer.minigamecore.implementation.feature.TimerFeature;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 public class CooldownFeature extends ArenaFeature<CooldownFeature.ArenaCooldownFeature> {
     private final KingOfTheHill instance;
@@ -23,36 +29,45 @@ public class CooldownFeature extends ArenaFeature<CooldownFeature.ArenaCooldownF
     protected ArenaCooldownFeature createFeature(Arena arena) {
         ArenaConfig arenaConfig = instance.getArenaConfig();
         String name = arena.getName();
-        long waitingTime = arenaConfig.getInstance(name + ".time.waiting", 1800L, Number.class).longValue();
-        long ingameTime = arenaConfig.getInstance(name + ".time.in-game", 300L, Number.class).longValue();
-        TimeUnit timeUnit = TimeUnit.SECONDS;
-        if (arenaConfig.contains(name + ".time.unit")) {
-            String unit = arenaConfig.getInstance(name + ".time.unit", timeUnit.name(), String.class);
-            try {
-                timeUnit = TimeUnit.valueOf(unit.toUpperCase(Locale.ROOT));
-            } catch (Exception ignored) {
-                // IGNORED
-            }
+        Supplier<Long> waitingTimeSupplier;
+        TimeUnit timeUnit = Optional.ofNullable(arenaConfig.getInstance(name + ".time.unit", TimeUnit.SECONDS.name(), String.class))
+                .flatMap(unit -> {
+                    try {
+                        return Optional.of(TimeUnit.valueOf(unit.toUpperCase(Locale.ROOT)));
+                    } catch (Exception ignored) {
+                        return Optional.empty();
+                    }
+                })
+                .orElse(TimeUnit.SECONDS);
+        if (arenaConfig.contains(name + ".time.waiting-cron")) {
+            List<String> cronList = CollectionUtils.createStringListFromObject(arenaConfig.get(name + ".time.waiting-cron"), true);
+            CronTimeManager cronTimeManager = new CronTimeManager(CronType.QUARTZ, cronList);
+            waitingTimeSupplier = cronTimeManager::getRemainingMillis;
+        } else {
+            long waitingTime = timeUnit.toMillis(
+                    arenaConfig.getInstance(name + ".time.waiting", 1800L, Number.class).longValue()
+            );
+            waitingTimeSupplier = () -> waitingTime;
         }
-        return new ArenaCooldownFeature(waitingTime, ingameTime, timeUnit);
+        long ingameTime = arenaConfig.getInstance(name + ".time.in-game", 300L, Number.class).longValue();
+        ingameTime = timeUnit.toMillis(ingameTime);
+        return new ArenaCooldownFeature(waitingTimeSupplier, ingameTime);
     }
 
     public static class ArenaCooldownFeature extends TimerFeature {
-        private final long waitingTime;
+        private final Supplier<Long> waitingTimeSupplier;
         private final long ingameTime;
-        private final TimeUnit timeUnit;
 
-        public ArenaCooldownFeature(long waitingTime, long ingameTime, TimeUnit timeUnit) {
-            this.waitingTime = waitingTime;
+        public ArenaCooldownFeature(Supplier<Long> waitingTimeSupplier, long ingameTime) {
+            this.waitingTimeSupplier = waitingTimeSupplier;
             this.ingameTime = ingameTime;
-            this.timeUnit = timeUnit;
         }
 
         public void start(Class<? extends GameState> stateClass) {
             if (stateClass == WaitingState.class) {
-                setDuration(waitingTime, timeUnit);
+                setDuration(waitingTimeSupplier.get(), TimeUnit.MILLISECONDS);
             } else if (stateClass == InGameState.class) {
-                setDuration(ingameTime, timeUnit);
+                setDuration(ingameTime, TimeUnit.MILLISECONDS);
             }
         }
     }
