@@ -21,11 +21,10 @@ public class ReloadCommand extends SubCommand {
 
     @Override
     public void onSubCommand(@NotNull CommandSender sender, @NotNull String label, @NotNull String... args) {
-        instance.getArenaManager().clearAllArenas();
         instance.getMainConfig().reload();
         instance.getMessageConfig().reload();
         instance.getArenaConfig().reload();
-        instance.getArenaManager().loadArenas().forEach(instance.getArenaManager()::addArena);
+        instance.getArenaManager().reloadArena();
         MessageUtils.sendMessage(sender, MessageConfig.SUCCESS.getValue());
     }
 
