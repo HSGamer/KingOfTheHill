@@ -25,7 +25,7 @@ public class ReloadCommand extends SubCommand {
         instance.getMainConfig().reload();
         instance.getMessageConfig().reload();
         instance.getArenaConfig().reload();
-        instance.getArenaManager().loadArenas();
+        instance.getArenaManager().loadArenas().forEach(instance.getArenaManager()::addArena);
         MessageUtils.sendMessage(sender, MessageConfig.SUCCESS.getValue());
     }
 
