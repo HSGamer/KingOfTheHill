@@ -19,7 +19,7 @@ public class EndingState implements GameState {
     }
 
     @Override
-    public void handle(Arena arena) {
+    public void handle(Arena arena, long delta) {
         List<Pair<UUID, Integer>> topList = arena.getArenaFeature(PointFeature.class).getTop();
         instance.getRewardManager().reward(topList);
         arena.getArenaFeature(PointFeature.class).clear();

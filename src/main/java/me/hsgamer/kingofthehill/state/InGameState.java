@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 public class InGameState implements GameState {
     @Override
-    public void handle(Arena arena) {
+    public void handle(Arena arena, long delta) {
         long cooldown = arena.getArenaFeature(CooldownFeature.class).getDuration(TimeUnit.SECONDS);
         if (cooldown <= 0) {
             String endMessage = MessageConfig.END_BROADCAST.getValue().replace("{name}", arena.getName());
