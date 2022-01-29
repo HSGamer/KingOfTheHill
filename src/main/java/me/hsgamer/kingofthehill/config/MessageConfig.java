@@ -16,6 +16,7 @@ public class MessageConfig extends PathableConfig {
     public static final StringConfigPath STATE_ENDING = new StringConfigPath("state.ending", "&cENDING");
     public static final StringConfigPath ARENA_NOT_FOUND = new StringConfigPath("arena-not-found", "&cThe arena is not found");
     public static final StringConfigPath SUCCESS = new StringConfigPath("success", "&aSuccess");
+    public static final StringConfigPath NOT_ENOUGH_PLAYERS_TO_REWARD = new StringConfigPath("not-enough-players-to-reward", "&cThe arena {name} does not have enough players to give rewards");
     public static final StringConfigPath TIME_FORMAT = new StringConfigPath("time-format", "HH:mm:ss");
 
     public MessageConfig(Plugin plugin) {

@@ -6,6 +6,7 @@ import me.hsgamer.kingofthehill.config.MessageConfig;
 import me.hsgamer.kingofthehill.feature.BoundingFeature;
 import me.hsgamer.kingofthehill.feature.CooldownFeature;
 import me.hsgamer.kingofthehill.feature.PointFeature;
+import me.hsgamer.kingofthehill.feature.RewardFeature;
 import me.hsgamer.kingofthehill.state.EndingState;
 import me.hsgamer.kingofthehill.state.InGameState;
 import me.hsgamer.kingofthehill.state.WaitingState;
@@ -34,7 +35,7 @@ public class GameArenaManager extends LoadedArenaManager {
         return Arrays.asList(
                 new WaitingState(),
                 new InGameState(),
-                new EndingState(instance)
+                new EndingState()
         );
     }
 
@@ -43,7 +44,8 @@ public class GameArenaManager extends LoadedArenaManager {
         return Arrays.asList(
                 new PointFeature(instance),
                 new CooldownFeature(instance),
-                new BoundingFeature(instance)
+                new BoundingFeature(instance),
+                new RewardFeature(instance)
         );
     }
 

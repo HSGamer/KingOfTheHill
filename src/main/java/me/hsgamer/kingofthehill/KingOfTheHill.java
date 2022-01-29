@@ -9,7 +9,6 @@ import me.hsgamer.kingofthehill.config.ArenaConfig;
 import me.hsgamer.kingofthehill.config.MainConfig;
 import me.hsgamer.kingofthehill.config.MessageConfig;
 import me.hsgamer.kingofthehill.manager.GameArenaManager;
-import me.hsgamer.kingofthehill.manager.RewardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +24,6 @@ public final class KingOfTheHill extends BasePlugin {
     private final ArenaConfig arenaConfig = new ArenaConfig(this);
     private final GameArenaManager arenaManager = new GameArenaManager(this);
     private final List<Runnable> disableList = new ArrayList<>();
-    private RewardManager rewardManager;
 
     @Override
     public void load() {
@@ -38,7 +36,6 @@ public final class KingOfTheHill extends BasePlugin {
     @Override
     public void enable() {
         arenaManager.init();
-        rewardManager = MainConfig.REWARD.getValue();
         registerCommand(new AdminCommand(this));
     }
 
@@ -101,10 +98,6 @@ public final class KingOfTheHill extends BasePlugin {
 
     public GameArenaManager getArenaManager() {
         return arenaManager;
-    }
-
-    public RewardManager getRewardManager() {
-        return rewardManager;
     }
 
     public MainConfig getMainConfig() {
