@@ -33,6 +33,7 @@ public class InGameState implements GameState {
                 pointFeature.takePoint(uuid);
             }
         });
+        pointFeature.takeTopSnapshot();
     }
 
     @Override

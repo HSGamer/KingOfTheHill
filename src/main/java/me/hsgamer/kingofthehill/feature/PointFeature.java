@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
@@ -32,14 +33,33 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
         return new ArenaPointFeature(pointAdd, pointMinus);
     }
 
-    public static class ArenaPointFeature implements Feature {
+    public class ArenaPointFeature implements Feature {
         private final int pointAdd;
         private final int pointMinus;
         private final Map<UUID, Integer> points = new IdentityHashMap<>();
+        private final AtomicBoolean updateTop = new AtomicBoolean(false);
+        private final List<Pair<UUID, Integer>> topSnapshot = new ArrayList<>();
 
         public ArenaPointFeature(int pointAdd, int pointMinus) {
             this.pointAdd = pointAdd;
             this.pointMinus = pointMinus;
+        }
+
+        public void takeTopSnapshot() {
+            if (updateTop.get()) {
+                return;
+            }
+            updateTop.set(true);
+            Bukkit.getScheduler().runTaskAsynchronously(instance, () -> {
+                List<Pair<UUID, Integer>> updatedTopSnapshot = getTop();
+                topSnapshot.clear();
+                topSnapshot.addAll(updatedTopSnapshot);
+                updateTop.set(false);
+            });
+        }
+
+        public Pair<UUID, Integer> getTopSnapshot(int index) {
+            return index >= 0 && index < topSnapshot.size() && !updateTop.get() ? topSnapshot.get(index) : null;
         }
 
         public void addPoint(UUID uuid) {
@@ -90,6 +110,7 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
         @Override
         public void clear() {
             points.clear();
+            takeTopSnapshot();
         }
 
         public void resetPointIfNotOnline() {

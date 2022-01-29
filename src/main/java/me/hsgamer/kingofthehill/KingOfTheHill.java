@@ -72,6 +72,12 @@ public final class KingOfTheHill extends BasePlugin {
                     if (params.startsWith("state_")) {
                         return instance.getArenaManager().getArenaState(params.substring("state_".length()));
                     }
+                    if (params.startsWith("top_name_")) {
+                        return instance.getArenaManager().getTopName(params.substring("top_name_".length()));
+                    }
+                    if (params.startsWith("top_value_")) {
+                        return instance.getArenaManager().getTopValue(params.substring("top_value_".length()));
+                    }
                     return null;
                 }
             };
@@ -84,6 +90,11 @@ public final class KingOfTheHill extends BasePlugin {
                 String name = arena.getName();
                 HologramsAPI.registerPlaceholder(this, pluginName + "_time_" + name, 1, () -> arenaManager.getArenaCooldown(name));
                 HologramsAPI.registerPlaceholder(this, pluginName + "_state_" + name, 1, () -> arenaManager.getArenaState(name));
+                for (int i = 0; i < MainConfig.MAX_TOP_DISPLAY.getValue(); i++) {
+                    String selector = name + ":" + i;
+                    HologramsAPI.registerPlaceholder(this, pluginName + "_top_name_" + selector, 1, () -> arenaManager.getTopName(selector));
+                    HologramsAPI.registerPlaceholder(this, pluginName + "_top_value_" + selector, 1, () -> arenaManager.getTopValue(selector));
+                }
             });
             disableList.add(() -> HologramsAPI.unregisterPlaceholders(this));
         }
