@@ -49,6 +49,9 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
             if (updateTop.get()) {
                 return;
             }
+            if (!instance.isEnabled()) {
+                return;
+            }
             updateTop.set(true);
             Bukkit.getScheduler().runTaskAsynchronously(instance, () -> {
                 List<Pair<UUID, Integer>> updatedTopSnapshot = getTop();
