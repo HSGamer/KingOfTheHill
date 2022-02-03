@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
     private final KingOfTheHill instance;
@@ -43,22 +42,23 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
         public ArenaPointFeature(int pointAdd, int pointMinus) {
             this.pointAdd = pointAdd;
             this.pointMinus = pointMinus;
+            Bukkit.getScheduler().runTaskTimerAsynchronously(instance, this::takeTopSnapshot, 20, 20);
         }
 
-        public void takeTopSnapshot() {
-            if (updateTop.get()) {
+        private void takeTopSnapshot() {
+            if (!updateTop.get()) {
                 return;
             }
-            if (!instance.isEnabled()) {
-                return;
-            }
-            updateTop.set(true);
-            Bukkit.getScheduler().runTaskAsynchronously(instance, () -> {
+            if (!points.isEmpty() || !topSnapshot.isEmpty()) {
                 List<Pair<UUID, Integer>> updatedTopSnapshot = getTop();
                 topSnapshot.clear();
                 topSnapshot.addAll(updatedTopSnapshot);
-                updateTop.set(false);
-            });
+            }
+            updateTop.set(false);
+        }
+
+        public void enableTopSnapshot() {
+            updateTop.set(true);
         }
 
         public Pair<UUID, Integer> getTopSnapshot(int index) {
@@ -113,14 +113,11 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
         @Override
         public void clear() {
             points.clear();
-            takeTopSnapshot();
+            enableTopSnapshot();
         }
 
         public void resetPointIfNotOnline() {
-            points.keySet().stream()
-                    .filter(uuid -> Bukkit.getPlayer(uuid) == null)
-                    .collect(Collectors.toList())
-                    .forEach(points::remove);
+            points.replaceAll((uuid, point) -> Bukkit.getPlayer(uuid) == null ? 0 : point);
         }
     }
 }

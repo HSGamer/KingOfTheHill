@@ -8,6 +8,7 @@ import me.hsgamer.kingofthehill.feature.PointFeature;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.GameState;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -25,15 +26,15 @@ public class InGameState implements GameState {
         BoundingFeature.ArenaBoundingFeature boundingFeature = arena.getArenaFeature(BoundingFeature.class);
         PointFeature.ArenaPointFeature pointFeature = arena.getArenaFeature(PointFeature.class);
         pointFeature.resetPointIfNotOnline();
-        Bukkit.getOnlinePlayers().parallelStream().forEach(player -> {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             UUID uuid = player.getUniqueId();
             if (!player.isDead() && boundingFeature.checkBounding(uuid)) {
                 pointFeature.addPoint(uuid);
             } else {
                 pointFeature.takePoint(uuid);
             }
-        });
-        pointFeature.takeTopSnapshot();
+        }
+        pointFeature.enableTopSnapshot();
     }
 
     @Override
