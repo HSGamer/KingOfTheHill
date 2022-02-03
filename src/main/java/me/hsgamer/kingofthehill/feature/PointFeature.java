@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
     private final KingOfTheHill instance;
@@ -37,7 +38,7 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
         private final int pointMinus;
         private final Map<UUID, Integer> points = new IdentityHashMap<>();
         private final AtomicBoolean updateTop = new AtomicBoolean(false);
-        private final List<Pair<UUID, Integer>> topSnapshot = new ArrayList<>();
+        private final AtomicReference<List<Pair<UUID, Integer>>> topSnapshot = new AtomicReference<>(Collections.emptyList());
 
         public ArenaPointFeature(int pointAdd, int pointMinus) {
             this.pointAdd = pointAdd;
@@ -49,10 +50,9 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
             if (!updateTop.get()) {
                 return;
             }
-            if (!points.isEmpty() || !topSnapshot.isEmpty()) {
+            if (!points.isEmpty() || !topSnapshot.get().isEmpty()) {
                 List<Pair<UUID, Integer>> updatedTopSnapshot = getTop();
-                topSnapshot.clear();
-                topSnapshot.addAll(updatedTopSnapshot);
+                topSnapshot.lazySet(updatedTopSnapshot);
             }
             updateTop.set(false);
         }
@@ -62,7 +62,8 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
         }
 
         public Pair<UUID, Integer> getTopSnapshot(int index) {
-            return index >= 0 && index < topSnapshot.size() && !updateTop.get() ? topSnapshot.get(index) : null;
+            List<Pair<UUID, Integer>> topPair = topSnapshot.get();
+            return index >= 0 && index < topPair.size() && !updateTop.get() ? topPair.get(index) : null;
         }
 
         public void addPoint(UUID uuid) {
@@ -100,13 +101,18 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
         }
 
         public List<Pair<UUID, Integer>> getTop() {
-            List<Pair<UUID, Integer>> list = new ArrayList<>();
-            points.forEach((uuid, point) -> {
-                if (point > 0) {
-                    list.add(Pair.of(uuid, point));
-                }
-            });
-            list.sort(Comparator.<Pair<UUID, Integer>>comparingInt(Pair::getValue).reversed());
+            List<Pair<UUID, Integer>> list;
+            if (points.isEmpty()) {
+                list = Collections.emptyList();
+            } else {
+                list = new ArrayList<>();
+                points.forEach((uuid, point) -> {
+                    if (point > 0) {
+                        list.add(Pair.of(uuid, point));
+                    }
+                });
+                list.sort(Comparator.<Pair<UUID, Integer>>comparingInt(Pair::getValue).reversed());
+            }
             return list;
         }
 
