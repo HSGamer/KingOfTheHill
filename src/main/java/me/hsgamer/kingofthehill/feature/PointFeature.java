@@ -50,10 +50,8 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
             if (!updateTop.get()) {
                 return;
             }
-            if (!points.isEmpty() || !topSnapshot.get().isEmpty()) {
-                List<Pair<UUID, Integer>> updatedTopSnapshot = getTop();
-                topSnapshot.lazySet(updatedTopSnapshot);
-            }
+            List<Pair<UUID, Integer>> updatedTopSnapshot = getTop();
+            topSnapshot.lazySet(updatedTopSnapshot);
             updateTop.set(false);
         }
 
