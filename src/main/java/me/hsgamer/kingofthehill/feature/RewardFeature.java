@@ -8,6 +8,7 @@ import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.ArenaFeature;
 import me.hsgamer.minigamecore.base.Feature;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -58,10 +59,10 @@ public class RewardFeature extends ArenaFeature<RewardFeature.ArenaRewardFeature
             for (int i = 0; i < topList.size(); i++) {
                 int top = i + 1;
                 Pair<UUID, Integer> pair = topList.get(i);
-                Player player = Bukkit.getPlayer(pair.getKey());
-                if (player == null) continue;
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(pair.getKey());
                 int point = pair.getValue();
-                String name = player.getName();
+                String name = offlinePlayer.getName();
+                if (name == null) continue;
                 List<String> commands = new ArrayList<>(topCommands.getOrDefault(top, defaultCommands));
                 commands.replaceAll(s ->
                         s.replace("{name}", name)
