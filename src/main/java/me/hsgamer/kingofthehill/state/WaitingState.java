@@ -9,12 +9,12 @@ import java.util.concurrent.TimeUnit;
 
 public class WaitingState implements GameState {
     @Override
-    public void start(Arena arena, long delta) {
+    public void start(Arena arena) {
         arena.getArenaFeature(CooldownFeature.class).start(this);
     }
 
     @Override
-    public void update(Arena arena, long delta) {
+    public void update(Arena arena) {
         long cooldown = arena.getArenaFeature(CooldownFeature.class).getDuration(TimeUnit.SECONDS);
         if (cooldown <= 0) {
             arena.setNextState(InGameState.class);

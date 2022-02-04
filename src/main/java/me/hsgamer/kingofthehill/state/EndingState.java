@@ -14,13 +14,13 @@ import java.util.UUID;
 
 public class EndingState implements GameState {
     @Override
-    public void start(Arena arena, long delta) {
+    public void start(Arena arena) {
         String endMessage = MessageConfig.END_BROADCAST.getValue().replace("{name}", arena.getName());
         Bukkit.getOnlinePlayers().forEach(player -> MessageUtils.sendMessage(player, endMessage));
     }
 
     @Override
-    public void update(Arena arena, long delta) {
+    public void update(Arena arena) {
         List<Pair<UUID, Integer>> topList = arena.getArenaFeature(PointFeature.class).getTop();
         if (!arena.getArenaFeature(RewardFeature.class).reward(topList)) {
             String notEnoughPlayerMessage = MessageConfig.NOT_ENOUGH_PLAYERS_TO_REWARD.getValue().replace("{name}", arena.getName());
@@ -30,7 +30,7 @@ public class EndingState implements GameState {
     }
 
     @Override
-    public void end(Arena arena, long delta) {
+    public void end(Arena arena) {
         arena.getArenaFeature(PointFeature.class).clear();
     }
 
