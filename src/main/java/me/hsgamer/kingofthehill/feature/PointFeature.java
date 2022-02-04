@@ -61,7 +61,7 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
 
         public Pair<UUID, Integer> getTopSnapshot(int index) {
             List<Pair<UUID, Integer>> topPair = topSnapshot.get();
-            return index >= 0 && index < topPair.size() && !updateTop.get() ? topPair.get(index) : null;
+            return index >= 0 && index < topPair.size() ? topPair.get(index) : null;
         }
 
         public void addPoint(UUID uuid) {
