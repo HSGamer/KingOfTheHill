@@ -62,7 +62,7 @@ public class RewardFeature extends ArenaFeature<RewardFeature.ArenaRewardFeature
                 if (player == null) continue;
                 int point = pair.getValue();
                 String name = player.getName();
-                List<String> commands = topCommands.getOrDefault(top, defaultCommands);
+                List<String> commands = new ArrayList<>(topCommands.getOrDefault(top, defaultCommands));
                 commands.replaceAll(s ->
                         s.replace("{name}", name)
                                 .replace("{point}", Integer.toString(point))
