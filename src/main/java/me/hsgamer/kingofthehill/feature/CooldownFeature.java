@@ -10,7 +10,7 @@ import me.hsgamer.kingofthehill.state.WaitingState;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.ArenaFeature;
 import me.hsgamer.minigamecore.base.GameState;
-import me.hsgamer.minigamecore.implementation.feature.TimerFeature;
+import me.hsgamer.minigamecore.implementation.feature.single.TimerFeature;
 
 import java.util.List;
 import java.util.Locale;
