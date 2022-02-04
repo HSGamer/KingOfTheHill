@@ -3,7 +3,6 @@ package me.hsgamer.kingofthehill.state;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.kingofthehill.config.MessageConfig;
-import me.hsgamer.kingofthehill.feature.CooldownFeature;
 import me.hsgamer.kingofthehill.feature.PointFeature;
 import me.hsgamer.kingofthehill.feature.RewardFeature;
 import me.hsgamer.minigamecore.base.Arena;
@@ -14,17 +13,25 @@ import java.util.List;
 import java.util.UUID;
 
 public class EndingState implements GameState {
+    @Override
+    public void start(Arena arena, long delta) {
+        String endMessage = MessageConfig.END_BROADCAST.getValue().replace("{name}", arena.getName());
+        Bukkit.getOnlinePlayers().forEach(player -> MessageUtils.sendMessage(player, endMessage));
+    }
 
     @Override
-    public void handle(Arena arena, long delta) {
+    public void update(Arena arena, long delta) {
         List<Pair<UUID, Integer>> topList = arena.getArenaFeature(PointFeature.class).getTop();
         if (!arena.getArenaFeature(RewardFeature.class).reward(topList)) {
             String notEnoughPlayerMessage = MessageConfig.NOT_ENOUGH_PLAYERS_TO_REWARD.getValue().replace("{name}", arena.getName());
             Bukkit.getOnlinePlayers().forEach(player -> MessageUtils.sendMessage(player, notEnoughPlayerMessage));
         }
+        arena.setNextState(WaitingState.class);
+    }
+
+    @Override
+    public void end(Arena arena, long delta) {
         arena.getArenaFeature(PointFeature.class).clear();
-        arena.setState(WaitingState.class);
-        arena.getArenaFeature(CooldownFeature.class).start(arena.getState());
     }
 
     @Override

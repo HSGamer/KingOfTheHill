@@ -63,10 +63,10 @@ public class CooldownFeature extends ArenaFeature<CooldownFeature.ArenaCooldownF
             this.ingameTime = ingameTime;
         }
 
-        public void start(Class<? extends GameState> stateClass) {
-            if (stateClass == WaitingState.class) {
+        public void start(GameState state) {
+            if (state instanceof WaitingState) {
                 setDuration(waitingTimeSupplier.get(), TimeUnit.MILLISECONDS);
-            } else if (stateClass == InGameState.class) {
+            } else if (state instanceof InGameState) {
                 setDuration(ingameTime, TimeUnit.MILLISECONDS);
             }
         }

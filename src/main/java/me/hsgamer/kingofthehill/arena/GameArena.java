@@ -1,6 +1,5 @@
 package me.hsgamer.kingofthehill.arena;
 
-import me.hsgamer.kingofthehill.feature.CooldownFeature;
 import me.hsgamer.kingofthehill.state.WaitingState;
 import me.hsgamer.minigamecore.base.ArenaManager;
 import me.hsgamer.minigamecore.bukkit.SimpleBukkitArena;
@@ -12,8 +11,7 @@ public class GameArena extends SimpleBukkitArena {
 
     @Override
     public void init() {
-        setState(WaitingState.class);
-        getArenaFeature(CooldownFeature.class).start(getState());
+        setNextState(WaitingState.class);
         super.init();
     }
 }

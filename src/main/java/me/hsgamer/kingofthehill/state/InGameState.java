@@ -15,12 +15,17 @@ import java.util.concurrent.TimeUnit;
 
 public class InGameState implements GameState {
     @Override
-    public void handle(Arena arena, long delta) {
+    public void start(Arena arena, long delta) {
+        String startMessage = MessageConfig.START_BROADCAST.getValue().replace("{name}", arena.getName());
+        Bukkit.getOnlinePlayers().forEach(player -> MessageUtils.sendMessage(player, startMessage));
+        arena.getArenaFeature(CooldownFeature.class).start(this);
+    }
+
+    @Override
+    public void update(Arena arena, long delta) {
         long cooldown = arena.getArenaFeature(CooldownFeature.class).getDuration(TimeUnit.SECONDS);
         if (cooldown <= 0) {
-            String endMessage = MessageConfig.END_BROADCAST.getValue().replace("{name}", arena.getName());
-            Bukkit.getOnlinePlayers().forEach(player -> MessageUtils.sendMessage(player, endMessage));
-            arena.setState(EndingState.class);
+            arena.setNextState(EndingState.class);
             return;
         }
         BoundingFeature.ArenaBoundingFeature boundingFeature = arena.getArenaFeature(BoundingFeature.class);
