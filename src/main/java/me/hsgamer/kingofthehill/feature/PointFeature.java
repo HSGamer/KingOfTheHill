@@ -77,7 +77,7 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
 
         public void addPoint(UUID uuid) {
             points.merge(uuid, pointAdd, Integer::sum);
-            sendActionBar(uuid, MessageConfig.POINT_MINUS.getValue(), pointAdd);
+            sendActionBar(uuid, MessageConfig.POINT_ADD.getValue(), pointAdd);
         }
 
         public void takePoint(UUID uuid) {
