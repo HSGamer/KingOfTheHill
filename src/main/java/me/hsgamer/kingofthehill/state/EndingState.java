@@ -31,7 +31,7 @@ public class EndingState implements GameState {
 
     @Override
     public void end(Arena arena) {
-        arena.getArenaFeature(PointFeature.class).clear();
+        arena.getArenaFeature(PointFeature.class).clearPoints();
     }
 
     @Override

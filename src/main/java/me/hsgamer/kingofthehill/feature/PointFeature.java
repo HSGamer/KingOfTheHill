@@ -12,6 +12,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -39,6 +40,7 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
         private final int pointMinus;
         private final int maxPlayersToAdd;
         private final Map<UUID, Integer> points = new IdentityHashMap<>();
+        private final BukkitTask task;
         private final AtomicBoolean updateTop = new AtomicBoolean(false);
         private final AtomicReference<List<Pair<UUID, Integer>>> topSnapshot = new AtomicReference<>(Collections.emptyList());
 
@@ -46,7 +48,7 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
             this.pointAdd = pointAdd;
             this.pointMinus = pointMinus;
             this.maxPlayersToAdd = maxPlayersToAdd;
-            Bukkit.getScheduler().runTaskTimerAsynchronously(instance, this::takeTopSnapshot, 20, 20);
+            this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(instance, this::takeTopSnapshot, 20, 20);
         }
 
         private void takeTopSnapshot() {
@@ -59,7 +61,7 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
         }
 
         public void enableTopSnapshot() {
-            updateTop.set(true);
+            updateTop.lazySet(true);
         }
 
         public Pair<UUID, Integer> getTopSnapshot(int index) {
@@ -121,14 +123,17 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
             return list;
         }
 
-        @Override
-        public void clear() {
-            points.clear();
-            enableTopSnapshot();
-        }
-
         public void resetPointIfNotOnline() {
             points.replaceAll((uuid, point) -> Bukkit.getPlayer(uuid) == null ? 0 : point);
+        }
+
+        public void clearPoints() {
+            points.clear();
+        }
+
+        @Override
+        public void clear() {
+            task.cancel();
         }
     }
 }
