@@ -10,6 +10,8 @@ import me.hsgamer.minigamecore.base.GameState;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -31,13 +33,17 @@ public class InGameState implements GameState {
         BoundingFeature.ArenaBoundingFeature boundingFeature = arena.getArenaFeature(BoundingFeature.class);
         PointFeature.ArenaPointFeature pointFeature = arena.getArenaFeature(PointFeature.class);
         pointFeature.resetPointIfNotOnline();
+        List<UUID> playersToAdd = new ArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
             UUID uuid = player.getUniqueId();
             if (!player.isDead() && boundingFeature.checkBounding(uuid)) {
-                pointFeature.addPoint(uuid);
+                playersToAdd.add(uuid);
             } else {
                 pointFeature.takePoint(uuid);
             }
+        }
+        if (!playersToAdd.isEmpty()) {
+            pointFeature.tryAddPoint(playersToAdd);
         }
         pointFeature.enableTopSnapshot();
     }
