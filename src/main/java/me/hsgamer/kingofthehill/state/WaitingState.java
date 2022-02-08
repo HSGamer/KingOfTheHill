@@ -2,7 +2,6 @@ package me.hsgamer.kingofthehill.state;
 
 import me.hsgamer.kingofthehill.config.MessageConfig;
 import me.hsgamer.kingofthehill.feature.CooldownFeature;
-import me.hsgamer.kingofthehill.feature.PointFeature;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.GameState;
 
@@ -20,11 +19,6 @@ public class WaitingState implements GameState {
         if (cooldown <= 0) {
             arena.setNextState(InGameState.class);
         }
-    }
-
-    @Override
-    public void end(Arena arena) {
-        arena.getArenaFeature(PointFeature.class).enableTopSnapshot();
     }
 
     @Override

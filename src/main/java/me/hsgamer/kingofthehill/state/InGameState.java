@@ -21,6 +21,7 @@ public class InGameState implements GameState {
         String startMessage = MessageConfig.START_BROADCAST.getValue().replace("{name}", arena.getName());
         Bukkit.getOnlinePlayers().forEach(player -> MessageUtils.sendMessage(player, startMessage));
         arena.getArenaFeature(CooldownFeature.class).start(this);
+        arena.getArenaFeature(PointFeature.class).setTopSnapshot(true);
     }
 
     @Override
@@ -45,7 +46,11 @@ public class InGameState implements GameState {
         if (!playersToAdd.isEmpty()) {
             pointFeature.tryAddPoint(playersToAdd);
         }
-        pointFeature.enableTopSnapshot();
+    }
+
+    @Override
+    public void end(Arena arena) {
+        arena.getArenaFeature(PointFeature.class).setTopSnapshot(false);
     }
 
     @Override

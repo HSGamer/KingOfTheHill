@@ -52,16 +52,14 @@ public class PointFeature extends ArenaFeature<PointFeature.ArenaPointFeature> {
         }
 
         private void takeTopSnapshot() {
-            if (!updateTop.get()) {
-                return;
+            if (updateTop.get()) {
+                List<Pair<UUID, Integer>> updatedTopSnapshot = getTop();
+                topSnapshot.lazySet(updatedTopSnapshot);
             }
-            List<Pair<UUID, Integer>> updatedTopSnapshot = getTop();
-            topSnapshot.lazySet(updatedTopSnapshot);
-            updateTop.set(false);
         }
 
-        public void enableTopSnapshot() {
-            updateTop.lazySet(true);
+        public void setTopSnapshot(boolean enable) {
+            updateTop.lazySet(enable);
         }
 
         public Pair<UUID, Integer> getTopSnapshot(int index) {
