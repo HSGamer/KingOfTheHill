@@ -5,7 +5,7 @@ import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.kingofthehill.KingOfTheHill;
 import me.hsgamer.kingofthehill.Permissions;
 import me.hsgamer.kingofthehill.config.MessageConfig;
-import me.hsgamer.kingofthehill.feature.CooldownFeature;
+import me.hsgamer.kingofthehill.feature.arena.CooldownFeature;
 import me.hsgamer.minigamecore.base.Arena;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +28,7 @@ public class SkipTimeCommand extends SubCommand {
     public void onSubCommand(@NotNull CommandSender sender, @NotNull String label, @NotNull String... args) {
         Optional<Arena> optionalArena = instance.getArenaManager().getArenaByName(args[0]);
         if (optionalArena.isPresent()) {
-            optionalArena.get().getArenaFeature(CooldownFeature.class).setDuration(5, TimeUnit.MILLISECONDS);
+            optionalArena.get().getFeature(CooldownFeature.class).setDuration(5, TimeUnit.MILLISECONDS);
             MessageUtils.sendMessage(sender, MessageConfig.SUCCESS.getValue());
         } else {
             MessageUtils.sendMessage(sender, MessageConfig.ARENA_NOT_FOUND.getValue());

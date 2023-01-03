@@ -5,29 +5,30 @@ import me.hsgamer.kingofthehill.KingOfTheHill;
 import me.hsgamer.kingofthehill.arena.GameArena;
 import me.hsgamer.kingofthehill.config.MainConfig;
 import me.hsgamer.kingofthehill.config.MessageConfig;
-import me.hsgamer.kingofthehill.feature.BoundingFeature;
-import me.hsgamer.kingofthehill.feature.CooldownFeature;
-import me.hsgamer.kingofthehill.feature.PointFeature;
-import me.hsgamer.kingofthehill.feature.RewardFeature;
+import me.hsgamer.kingofthehill.feature.GlobalBoundingFeature;
+import me.hsgamer.kingofthehill.feature.GlobalCooldownFeature;
+import me.hsgamer.kingofthehill.feature.GlobalPointFeature;
+import me.hsgamer.kingofthehill.feature.GlobalRewardFeature;
+import me.hsgamer.kingofthehill.feature.arena.CooldownFeature;
+import me.hsgamer.kingofthehill.feature.arena.PointFeature;
 import me.hsgamer.kingofthehill.state.EndingState;
 import me.hsgamer.kingofthehill.state.InGameState;
 import me.hsgamer.kingofthehill.state.WaitingState;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.Feature;
 import me.hsgamer.minigamecore.base.GameState;
+import me.hsgamer.minigamecore.base.Unit;
+import me.hsgamer.minigamecore.base.extra.DisplayName;
 import me.hsgamer.minigamecore.implementation.manager.LoadedArenaManager;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class GameArenaManager extends LoadedArenaManager {
     private final KingOfTheHill instance;
@@ -37,8 +38,8 @@ public class GameArenaManager extends LoadedArenaManager {
     }
 
     @Override
-    protected List<GameState> loadGameStates() {
-        return Arrays.asList(
+    protected List<Unit<GameState>> loadGameStates() {
+        return Unit.wrap(
                 new WaitingState(),
                 new InGameState(),
                 new EndingState()
@@ -46,12 +47,12 @@ public class GameArenaManager extends LoadedArenaManager {
     }
 
     @Override
-    protected List<Feature> loadFeatures() {
-        return Arrays.asList(
-                new PointFeature(instance),
-                new CooldownFeature(instance),
-                new BoundingFeature(instance),
-                new RewardFeature(instance)
+    protected List<Unit<Feature>> loadFeatures() {
+        return Unit.wrap(
+                new GlobalPointFeature(instance),
+                new GlobalCooldownFeature(instance),
+                new GlobalBoundingFeature(instance),
+                new GlobalRewardFeature(instance)
         );
     }
 
@@ -59,22 +60,18 @@ public class GameArenaManager extends LoadedArenaManager {
     public List<Arena> loadArenas() {
         return instance.getArenaConfig().getKeys(false)
                 .stream()
-                .flatMap(name -> {
-                    GameArena arena = new GameArena(name, this);
-                    try {
-                        arena.getArenaFeature(BoundingFeature.class);
-                        return Stream.of(arena);
-                    } catch (Exception e) {
-                        instance.getLogger().log(Level.WARNING, e, () -> "Cannot add arena '" + name + "'");
-                        return Stream.empty();
-                    }
-                })
+                .map(name -> new GameArena(name, this))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void onArenaFailToLoad(Arena arena) {
+        instance.getLogger().warning("Cannot add arena '" + arena.getName() + "'");
     }
 
     public String getArenaCooldown(String arenaName) {
         return getArenaByName(arenaName)
-                .map(arena -> arena.getArenaFeature(CooldownFeature.class))
+                .map(arena -> arena.getFeature(CooldownFeature.class))
                 .map(feature -> feature.getDuration(TimeUnit.MILLISECONDS))
                 .map(millis -> DurationFormatUtils.formatDuration(millis, MessageConfig.TIME_FORMAT.getValue()))
                 .orElse("");
@@ -82,8 +79,10 @@ public class GameArenaManager extends LoadedArenaManager {
 
     public String getArenaState(String arenaName) {
         return getArenaByName(arenaName)
-                .flatMap(Arena::getStateInstance)
-                .map(GameState::getDisplayName)
+                .flatMap(Arena::getCurrentStateInstance)
+                .filter(DisplayName.class::isInstance)
+                .map(DisplayName.class::cast)
+                .map(DisplayName::getDisplayName)
                 .orElse("");
     }
 
@@ -100,7 +99,7 @@ public class GameArenaManager extends LoadedArenaManager {
         }
         int finalIndex = index;
         return getArenaByName(arenaName)
-                .map(arena -> arena.getArenaFeature(PointFeature.class))
+                .map(arena -> arena.getFeature(PointFeature.class))
                 .map(feature -> feature.getTopSnapshot(finalIndex));
     }
 

@@ -5,12 +5,9 @@ import me.hsgamer.hscore.common.CollectionUtils;
 import me.hsgamer.hscore.crontime.CronTimeManager;
 import me.hsgamer.kingofthehill.KingOfTheHill;
 import me.hsgamer.kingofthehill.config.ArenaConfig;
-import me.hsgamer.kingofthehill.state.InGameState;
-import me.hsgamer.kingofthehill.state.WaitingState;
+import me.hsgamer.kingofthehill.feature.arena.CooldownFeature;
 import me.hsgamer.minigamecore.base.Arena;
-import me.hsgamer.minigamecore.base.ArenaFeature;
-import me.hsgamer.minigamecore.base.GameState;
-import me.hsgamer.minigamecore.implementation.feature.single.TimerFeature;
+import me.hsgamer.minigamecore.base.Feature;
 
 import java.util.List;
 import java.util.Locale;
@@ -18,15 +15,14 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-public class CooldownFeature extends ArenaFeature<CooldownFeature.ArenaCooldownFeature> {
+public class GlobalCooldownFeature implements Feature {
     private final KingOfTheHill instance;
 
-    public CooldownFeature(KingOfTheHill instance) {
+    public GlobalCooldownFeature(KingOfTheHill instance) {
         this.instance = instance;
     }
 
-    @Override
-    protected ArenaCooldownFeature createFeature(Arena arena) {
+    public CooldownFeature createFeature(Arena arena) {
         ArenaConfig arenaConfig = instance.getArenaConfig();
         String name = arena.getName();
         Supplier<Long> waitingTimeSupplier;
@@ -51,24 +47,6 @@ public class CooldownFeature extends ArenaFeature<CooldownFeature.ArenaCooldownF
         }
         long ingameTime = arenaConfig.getInstance(name + ".time.in-game", 300L, Number.class).longValue();
         ingameTime = timeUnit.toMillis(ingameTime);
-        return new ArenaCooldownFeature(waitingTimeSupplier, ingameTime);
-    }
-
-    public static class ArenaCooldownFeature extends TimerFeature {
-        private final Supplier<Long> waitingTimeSupplier;
-        private final long ingameTime;
-
-        public ArenaCooldownFeature(Supplier<Long> waitingTimeSupplier, long ingameTime) {
-            this.waitingTimeSupplier = waitingTimeSupplier;
-            this.ingameTime = ingameTime;
-        }
-
-        public void start(GameState state) {
-            if (state instanceof WaitingState) {
-                setDuration(waitingTimeSupplier.get(), TimeUnit.MILLISECONDS);
-            } else if (state instanceof InGameState) {
-                setDuration(ingameTime, TimeUnit.MILLISECONDS);
-            }
-        }
+        return new CooldownFeature(waitingTimeSupplier, ingameTime);
     }
 }

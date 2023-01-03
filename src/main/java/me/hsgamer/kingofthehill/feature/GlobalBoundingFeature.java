@@ -2,51 +2,65 @@ package me.hsgamer.kingofthehill.feature;
 
 import me.hsgamer.kingofthehill.KingOfTheHill;
 import me.hsgamer.kingofthehill.config.ArenaConfig;
+import me.hsgamer.kingofthehill.feature.arena.BoundingFeature;
 import me.hsgamer.minigamecore.base.Arena;
-import me.hsgamer.minigamecore.base.ArenaFeature;
 import me.hsgamer.minigamecore.base.Feature;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 
 import java.util.Map;
-import java.util.UUID;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
-public class BoundingFeature extends ArenaFeature<BoundingFeature.ArenaBoundingFeature> {
+public class GlobalBoundingFeature implements Feature {
     private final KingOfTheHill instance;
 
-    public BoundingFeature(KingOfTheHill instance) {
+    public GlobalBoundingFeature(KingOfTheHill instance) {
         this.instance = instance;
     }
 
-    @Override
-    protected ArenaBoundingFeature createFeature(Arena arena) {
+    public boolean isArenaValid(Arena arena) {
         String name = arena.getName();
         ArenaConfig arenaConfig = instance.getArenaConfig();
         if (!arenaConfig.contains(name)) {
-            throw new IllegalStateException(name + " is not in the arena config");
+            instance.getLogger().warning(name + " is not in the arena config");
+            return false;
         }
         Map<String, Object> map = arenaConfig.getNormalizedValues(name, false);
         if (!map.containsKey("world") || !map.containsKey("pos1") || !map.containsKey("pos2")) {
-            throw new IllegalStateException(name + " is missing 'world', 'pos1' or 'pos2'");
+            instance.getLogger().warning(name + " is missing 'world', 'pos1' or 'pos2'");
+            return false;
         }
         String worldName = String.valueOf(map.get("world"));
         World world = Bukkit.getWorld(worldName);
         if (world == null) {
-            throw new IllegalStateException(name + " has invalid world");
+            instance.getLogger().warning(name + " has invalid world");
+            return false;
         }
         Location pos1 = getLocation(world, String.valueOf(map.get("pos1")));
         if (pos1 == null) {
-            throw new IllegalStateException(name + " has invalid position 1");
+            instance.getLogger().warning(name + " has invalid position 1");
+            return false;
         }
         Location pos2 = getLocation(world, String.valueOf(map.get("pos2")));
         if (pos2 == null) {
-            throw new IllegalStateException(name + " has invalid position 2");
+            instance.getLogger().warning(name + " has invalid position 2");
+            return false;
         }
-        return new ArenaBoundingFeature(world, BoundingBox.of(pos1.getBlock(), pos2.getBlock()));
+        return true;
+    }
+
+    public BoundingFeature createFeature(Arena arena) {
+        String name = arena.getName();
+        ArenaConfig arenaConfig = instance.getArenaConfig();
+        Map<String, Object> map = arenaConfig.getNormalizedValues(name, false);
+        String worldName = String.valueOf(map.get("world"));
+        World world = Bukkit.getWorld(worldName);
+        Location pos1 = getLocation(world, String.valueOf(map.get("pos1")));
+        Location pos2 = getLocation(world, String.valueOf(map.get("pos2")));
+        return new BoundingFeature(world, BoundingBox.of(Objects.requireNonNull(pos1).getBlock(), Objects.requireNonNull(pos2).getBlock()));
     }
 
     private Location getLocation(World world, String value) {
@@ -58,28 +72,6 @@ public class BoundingFeature extends ArenaFeature<BoundingFeature.ArenaBoundingF
             return new Location(world, Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
         } catch (Exception e) {
             return null;
-        }
-    }
-
-    public static class ArenaBoundingFeature implements Feature {
-        private final World world;
-        private final BoundingBox boundingBox;
-
-        public ArenaBoundingFeature(World world, BoundingBox boundingBox) {
-            this.world = world;
-            this.boundingBox = boundingBox;
-        }
-
-        public boolean checkBounding(UUID uuid) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player == null) {
-                return false;
-            }
-            if (player.getWorld() != world) {
-                return false;
-            }
-            Location location = player.getLocation();
-            return boundingBox.contains(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         }
     }
 }
