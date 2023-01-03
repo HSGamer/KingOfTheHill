@@ -1,6 +1,7 @@
 package me.hsgamer.kingofthehill.arena;
 
 import me.hsgamer.kingofthehill.feature.GlobalBoundingFeature;
+import me.hsgamer.kingofthehill.feature.GlobalCooldownFeature;
 import me.hsgamer.kingofthehill.feature.GlobalPointFeature;
 import me.hsgamer.kingofthehill.feature.GlobalRewardFeature;
 import me.hsgamer.kingofthehill.state.WaitingState;
@@ -20,7 +21,7 @@ public class GameArena extends SimpleBukkitArena {
     protected List<Unit<Feature>> loadFeatures() {
         return Unit.wrap(
                 getFeature(GlobalBoundingFeature.class).createFeature(this),
-                getFeature(GlobalBoundingFeature.class).createFeature(this),
+                getFeature(GlobalCooldownFeature.class).createFeature(this),
                 getFeature(GlobalPointFeature.class).createFeature(this),
                 getFeature(GlobalRewardFeature.class).createFeature(this)
         );
