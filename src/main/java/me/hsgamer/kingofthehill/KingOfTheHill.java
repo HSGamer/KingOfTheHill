@@ -1,21 +1,17 @@
 package me.hsgamer.kingofthehill;
 
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.hsgamer.hscore.bukkit.baseplugin.BasePlugin;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.kingofthehill.command.AdminCommand;
 import me.hsgamer.kingofthehill.config.ArenaConfig;
 import me.hsgamer.kingofthehill.config.MainConfig;
 import me.hsgamer.kingofthehill.config.MessageConfig;
+import me.hsgamer.kingofthehill.hook.KOTHPlaceholder;
 import me.hsgamer.kingofthehill.manager.GameArenaManager;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 public final class KingOfTheHill extends BasePlugin {
     private final MainConfig mainConfig = new MainConfig(this);
@@ -41,45 +37,7 @@ public final class KingOfTheHill extends BasePlugin {
     @Override
     public void postEnable() {
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            KingOfTheHill instance = this;
-            PlaceholderExpansion expansion = new PlaceholderExpansion() {
-                @Override
-                public boolean persist() {
-                    return true;
-                }
-
-                @Override
-                public @NotNull String getIdentifier() {
-                    return instance.getName().toLowerCase(Locale.ROOT);
-                }
-
-                @Override
-                public @NotNull String getAuthor() {
-                    return Arrays.toString(instance.getDescription().getAuthors().toArray(new String[0]));
-                }
-
-                @Override
-                public @NotNull String getVersion() {
-                    return instance.getDescription().getVersion();
-                }
-
-                @Override
-                public String onRequest(OfflinePlayer player, String params) {
-                    if (params.startsWith("time_")) {
-                        return instance.getArenaManager().getArenaCooldown(params.substring("time_".length()));
-                    }
-                    if (params.startsWith("state_")) {
-                        return instance.getArenaManager().getArenaState(params.substring("state_".length()));
-                    }
-                    if (params.startsWith("top_name_")) {
-                        return instance.getArenaManager().getTopName(params.substring("top_name_".length()));
-                    }
-                    if (params.startsWith("top_value_")) {
-                        return instance.getArenaManager().getTopValue(params.substring("top_value_".length()));
-                    }
-                    return null;
-                }
-            };
+            KOTHPlaceholder expansion = new KOTHPlaceholder(this);
             expansion.register();
             disableList.add(expansion::unregister);
         }
