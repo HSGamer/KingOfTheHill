@@ -31,4 +31,9 @@ public class GameArena extends SimpleBukkitArena {
     protected void initArena() {
         setNextState(WaitingState.class);
     }
+
+    @Override
+    public boolean isValid() {
+        return getFeature(GlobalBoundingFeature.class).isArenaValid(this);
+    }
 }
