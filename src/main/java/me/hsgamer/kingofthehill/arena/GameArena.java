@@ -15,6 +15,7 @@ import java.util.List;
 public class GameArena extends SimpleBukkitArena {
     public GameArena(String name, ArenaManager arenaManager) {
         super(name, arenaManager);
+        setNextState(WaitingState.class);
     }
 
     @Override
@@ -25,11 +26,6 @@ public class GameArena extends SimpleBukkitArena {
                 getFeature(GlobalPointFeature.class).createFeature(this),
                 getFeature(GlobalRewardFeature.class).createFeature(this)
         );
-    }
-
-    @Override
-    protected void initArena() {
-        setNextState(WaitingState.class);
     }
 
     @Override
