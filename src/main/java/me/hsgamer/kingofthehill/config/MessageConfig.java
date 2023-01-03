@@ -2,7 +2,7 @@ package me.hsgamer.kingofthehill.config;
 
 import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.config.PathableConfig;
-import me.hsgamer.hscore.config.path.StringConfigPath;
+import me.hsgamer.hscore.config.path.impl.StringConfigPath;
 import org.bukkit.plugin.Plugin;
 
 public class MessageConfig extends PathableConfig {

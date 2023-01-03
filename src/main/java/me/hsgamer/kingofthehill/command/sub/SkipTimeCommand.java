@@ -1,6 +1,6 @@
 package me.hsgamer.kingofthehill.command.sub;
 
-import me.hsgamer.hscore.bukkit.subcommand.SubCommand;
+import me.hsgamer.hscore.bukkit.command.sub.SubCommand;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.kingofthehill.KingOfTheHill;
 import me.hsgamer.kingofthehill.Permissions;
