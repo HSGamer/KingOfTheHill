@@ -17,13 +17,13 @@ import me.hsgamer.kingofthehill.state.WaitingState;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.Feature;
 import me.hsgamer.minigamecore.base.GameState;
-import me.hsgamer.minigamecore.base.Unit;
 import me.hsgamer.minigamecore.base.extra.DisplayName;
 import me.hsgamer.minigamecore.implementation.manager.LoadedArenaManager;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,8 +38,8 @@ public class GameArenaManager extends LoadedArenaManager {
     }
 
     @Override
-    protected List<Unit<GameState>> loadGameStates() {
-        return Unit.wrap(
+    protected List<GameState> loadGameStates() {
+        return Arrays.asList(
                 new WaitingState(),
                 new InGameState(),
                 new EndingState()
@@ -47,8 +47,8 @@ public class GameArenaManager extends LoadedArenaManager {
     }
 
     @Override
-    protected List<Unit<Feature>> loadFeatures() {
-        return Unit.wrap(
+    protected List<Feature> loadFeatures() {
+        return Arrays.asList(
                 new GlobalPointFeature(instance),
                 new GlobalCooldownFeature(instance),
                 new GlobalBoundingFeature(instance),

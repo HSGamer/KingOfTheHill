@@ -7,9 +7,9 @@ import me.hsgamer.kingofthehill.feature.GlobalRewardFeature;
 import me.hsgamer.kingofthehill.state.WaitingState;
 import me.hsgamer.minigamecore.base.ArenaManager;
 import me.hsgamer.minigamecore.base.Feature;
-import me.hsgamer.minigamecore.base.Unit;
 import me.hsgamer.minigamecore.bukkit.SimpleBukkitArena;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class GameArena extends SimpleBukkitArena {
@@ -18,8 +18,8 @@ public class GameArena extends SimpleBukkitArena {
     }
 
     @Override
-    protected List<Unit<Feature>> loadFeatures() {
-        return Unit.wrap(
+    protected List<Feature> loadFeatures() {
+        return Arrays.asList(
                 getFeature(GlobalBoundingFeature.class).createFeature(this),
                 getFeature(GlobalCooldownFeature.class).createFeature(this),
                 getFeature(GlobalPointFeature.class).createFeature(this),

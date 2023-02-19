@@ -36,6 +36,7 @@ public final class KingOfTheHill extends BasePlugin {
 
     @Override
     public void postEnable() {
+        arenaManager.postInit();
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             KOTHPlaceholder expansion = new KOTHPlaceholder(this);
             expansion.register();
