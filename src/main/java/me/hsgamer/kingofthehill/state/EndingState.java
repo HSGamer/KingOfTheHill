@@ -7,13 +7,13 @@ import me.hsgamer.kingofthehill.feature.arena.PointFeature;
 import me.hsgamer.kingofthehill.feature.arena.RewardFeature;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.GameState;
-import me.hsgamer.minigamecore.base.extra.DisplayName;
+import me.hsgamer.minigamecore.bukkit.extra.ColoredDisplayName;
 import org.bukkit.Bukkit;
 
 import java.util.List;
 import java.util.UUID;
 
-public class EndingState implements GameState, DisplayName {
+public class EndingState implements GameState, ColoredDisplayName {
     @Override
     public void start(Arena arena) {
         String endMessage = MessageConfig.END_BROADCAST.getValue().replace("{name}", arena.getName());

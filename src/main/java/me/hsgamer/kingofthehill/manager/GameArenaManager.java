@@ -18,7 +18,7 @@ import me.hsgamer.kingofthehill.state.WaitingState;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.Feature;
 import me.hsgamer.minigamecore.base.GameState;
-import me.hsgamer.minigamecore.base.extra.DisplayName;
+import me.hsgamer.minigamecore.bukkit.extra.ColoredDisplayName;
 import me.hsgamer.minigamecore.implementation.manager.LoadedArenaManager;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
@@ -81,9 +81,9 @@ public class GameArenaManager extends LoadedArenaManager {
     public String getArenaState(String arenaName) {
         return getArenaByName(arenaName)
                 .flatMap(Arena::getCurrentStateInstance)
-                .filter(DisplayName.class::isInstance)
-                .map(DisplayName.class::cast)
-                .map(DisplayName::getDisplayName)
+                .filter(ColoredDisplayName.class::isInstance)
+                .map(ColoredDisplayName.class::cast)
+                .map(ColoredDisplayName::getColoredDisplayName)
                 .orElse("");
     }
 

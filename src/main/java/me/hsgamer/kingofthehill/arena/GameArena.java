@@ -5,16 +5,16 @@ import me.hsgamer.kingofthehill.feature.GlobalCooldownFeature;
 import me.hsgamer.kingofthehill.feature.GlobalPointFeature;
 import me.hsgamer.kingofthehill.feature.GlobalRewardFeature;
 import me.hsgamer.kingofthehill.state.WaitingState;
-import me.hsgamer.minigamecore.base.ArenaManager;
 import me.hsgamer.minigamecore.base.Feature;
-import me.hsgamer.minigamecore.bukkit.SimpleBukkitArena;
+import me.hsgamer.minigamecore.base.FeatureUnit;
+import me.hsgamer.minigamecore.bukkit.hscore.HSCoreBukkitArena;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class GameArena extends SimpleBukkitArena {
-    public GameArena(String name, ArenaManager arenaManager) {
-        super(name, arenaManager);
+public class GameArena extends HSCoreBukkitArena {
+    public GameArena(String name, FeatureUnit parent) {
+        super(name, parent);
     }
 
     @Override

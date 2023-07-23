@@ -4,11 +4,11 @@ import me.hsgamer.kingofthehill.config.MessageConfig;
 import me.hsgamer.kingofthehill.feature.arena.CooldownFeature;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.GameState;
-import me.hsgamer.minigamecore.base.extra.DisplayName;
+import me.hsgamer.minigamecore.bukkit.extra.ColoredDisplayName;
 
 import java.util.concurrent.TimeUnit;
 
-public class WaitingState implements GameState, DisplayName {
+public class WaitingState implements GameState, ColoredDisplayName {
     @Override
     public void start(Arena arena) {
         arena.getFeature(CooldownFeature.class).start(this);

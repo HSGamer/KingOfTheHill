@@ -7,7 +7,7 @@ import me.hsgamer.kingofthehill.feature.arena.CooldownFeature;
 import me.hsgamer.kingofthehill.feature.arena.PointFeature;
 import me.hsgamer.minigamecore.base.Arena;
 import me.hsgamer.minigamecore.base.GameState;
-import me.hsgamer.minigamecore.base.extra.DisplayName;
+import me.hsgamer.minigamecore.bukkit.extra.ColoredDisplayName;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class InGameState implements GameState, DisplayName {
+public class InGameState implements GameState, ColoredDisplayName {
     @Override
     public void start(Arena arena) {
         String startMessage = MessageConfig.START_BROADCAST.getValue().replace("{name}", arena.getName());
