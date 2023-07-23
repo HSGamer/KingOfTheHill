@@ -1,6 +1,7 @@
 package me.hsgamer.kingofthehill.manager;
 
 import me.hsgamer.hscore.common.Pair;
+import me.hsgamer.hscore.config.PathString;
 import me.hsgamer.kingofthehill.KingOfTheHill;
 import me.hsgamer.kingofthehill.arena.GameArena;
 import me.hsgamer.kingofthehill.config.MainConfig;
@@ -60,7 +61,7 @@ public class GameArenaManager extends LoadedArenaManager {
     public List<Arena> loadArenas() {
         return instance.getArenaConfig().getKeys(false)
                 .stream()
-                .map(name -> new GameArena(name, this))
+                .map(path -> new GameArena(PathString.toPath(".", path), this))
                 .collect(Collectors.toList());
     }
 

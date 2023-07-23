@@ -2,6 +2,7 @@ package me.hsgamer.kingofthehill.feature;
 
 import com.cronutils.model.CronType;
 import me.hsgamer.hscore.common.CollectionUtils;
+import me.hsgamer.hscore.config.PathString;
 import me.hsgamer.hscore.crontime.CronTimeManager;
 import me.hsgamer.kingofthehill.KingOfTheHill;
 import me.hsgamer.kingofthehill.config.ArenaConfig;
@@ -26,7 +27,7 @@ public class GlobalCooldownFeature implements Feature {
         ArenaConfig arenaConfig = instance.getArenaConfig();
         String name = arena.getName();
         Supplier<Long> waitingTimeSupplier;
-        TimeUnit timeUnit = Optional.ofNullable(arenaConfig.getInstance(name + ".time.unit", TimeUnit.SECONDS.name(), String.class))
+        TimeUnit timeUnit = Optional.ofNullable(arenaConfig.getInstance(new PathString(name, "time", "unit"), TimeUnit.SECONDS.name(), String.class))
                 .flatMap(unit -> {
                     try {
                         return Optional.of(TimeUnit.valueOf(unit.toUpperCase(Locale.ROOT)));
@@ -35,17 +36,17 @@ public class GlobalCooldownFeature implements Feature {
                     }
                 })
                 .orElse(TimeUnit.SECONDS);
-        if (arenaConfig.contains(name + ".time.waiting-cron")) {
-            List<String> cronList = CollectionUtils.createStringListFromObject(arenaConfig.get(name + ".time.waiting-cron"), true);
+        if (arenaConfig.contains(new PathString(name, "time", "waiting-cron"))) {
+            List<String> cronList = CollectionUtils.createStringListFromObject(arenaConfig.get(new PathString(name, "time", "waiting-cron")), true);
             CronTimeManager cronTimeManager = new CronTimeManager(CronType.QUARTZ, cronList);
             waitingTimeSupplier = cronTimeManager::getRemainingMillis;
         } else {
             long waitingTime = timeUnit.toMillis(
-                    arenaConfig.getInstance(name + ".time.waiting", 1800L, Number.class).longValue()
+                    arenaConfig.getInstance(new PathString(name, "time", "waiting"), 1800L, Number.class).longValue()
             );
             waitingTimeSupplier = () -> waitingTime;
         }
-        long ingameTime = arenaConfig.getInstance(name + ".time.in-game", 300L, Number.class).longValue();
+        long ingameTime = arenaConfig.getInstance(new PathString(name, "time", "in-game"), 300L, Number.class).longValue();
         ingameTime = timeUnit.toMillis(ingameTime);
         return new CooldownFeature(waitingTimeSupplier, ingameTime);
     }

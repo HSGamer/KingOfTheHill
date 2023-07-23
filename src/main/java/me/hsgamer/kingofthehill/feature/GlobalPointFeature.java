@@ -1,5 +1,6 @@
 package me.hsgamer.kingofthehill.feature;
 
+import me.hsgamer.hscore.config.PathString;
 import me.hsgamer.kingofthehill.KingOfTheHill;
 import me.hsgamer.kingofthehill.config.ArenaConfig;
 import me.hsgamer.kingofthehill.feature.arena.PointFeature;
@@ -16,9 +17,9 @@ public class GlobalPointFeature implements Feature {
     public PointFeature createFeature(Arena arena) {
         ArenaConfig arenaConfig = instance.getArenaConfig();
         String name = arena.getName();
-        int pointAdd = arenaConfig.getInstance(name + ".point.add", 5, Number.class).intValue();
-        int pointMinus = arenaConfig.getInstance(name + ".point.minus", 1, Number.class).intValue();
-        int maxPlayersToAdd = arenaConfig.getInstance(name + ".point.max-players-to-add", -1, Number.class).intValue();
+        int pointAdd = arenaConfig.getInstance(new PathString(name, "point", "add"), 5, Number.class).intValue();
+        int pointMinus = arenaConfig.getInstance(new PathString(name, "point", "minus"), 1, Number.class).intValue();
+        int maxPlayersToAdd = arenaConfig.getInstance(new PathString(name, "point", "max-players-to-add"), -1, Number.class).intValue();
         return new PointFeature(instance, pointAdd, pointMinus, maxPlayersToAdd);
     }
 }

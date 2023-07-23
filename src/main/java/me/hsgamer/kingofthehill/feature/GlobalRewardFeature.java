@@ -1,5 +1,6 @@
 package me.hsgamer.kingofthehill.feature;
 
+import me.hsgamer.hscore.config.PathString;
 import me.hsgamer.kingofthehill.KingOfTheHill;
 import me.hsgamer.kingofthehill.config.ArenaConfig;
 import me.hsgamer.kingofthehill.feature.arena.RewardFeature;
@@ -18,8 +19,8 @@ public class GlobalRewardFeature implements Feature {
     public RewardFeature createFeature(Arena arena) {
         ArenaConfig arenaConfig = instance.getArenaConfig();
         String name = arena.getName();
-        Map<String, Object> value = arenaConfig.getValues(name + ".reward", false);
-        int minPlayersToReward = arenaConfig.getInstance(name + ".min-players-to-reward", 0, Number.class).intValue();
+        Map<String, Object> value = PathString.toPathMap(".", arenaConfig.getNormalizedValues(new PathString(name, "reward"), false));
+        int minPlayersToReward = arenaConfig.getInstance(new PathString(name, "min-players-to-reward"), 0, Number.class).intValue();
         return new RewardFeature(value, minPlayersToReward);
     }
 }

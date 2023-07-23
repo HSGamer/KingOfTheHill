@@ -1,5 +1,6 @@
 package me.hsgamer.kingofthehill.feature.arena;
 
+import me.hsgamer.hscore.bukkit.utils.ColorUtils;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.Pair;
 import me.hsgamer.kingofthehill.KingOfTheHill;
@@ -75,7 +76,7 @@ public class PointFeature implements Feature {
         if (player == null) {
             return;
         }
-        message = MessageUtils.colorize(message)
+        message = ColorUtils.colorize(message)
                 .replace("{point}", Integer.toString(point))
                 .replace("{total}", Integer.toString(getPoint(uuid)));
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));

@@ -1,5 +1,6 @@
 package me.hsgamer.kingofthehill.feature;
 
+import me.hsgamer.hscore.config.PathString;
 import me.hsgamer.kingofthehill.KingOfTheHill;
 import me.hsgamer.kingofthehill.config.ArenaConfig;
 import me.hsgamer.kingofthehill.feature.arena.BoundingFeature;
@@ -24,11 +25,11 @@ public class GlobalBoundingFeature implements Feature {
     public boolean isArenaValid(Arena arena) {
         String name = arena.getName();
         ArenaConfig arenaConfig = instance.getArenaConfig();
-        if (!arenaConfig.contains(name)) {
+        if (!arenaConfig.contains(new PathString(name))) {
             instance.getLogger().warning(name + " is not in the arena config");
             return false;
         }
-        Map<String, Object> map = arenaConfig.getNormalizedValues(name, false);
+        Map<String, Object> map = PathString.toPathMap(".", arenaConfig.getNormalizedValues(new PathString(name), false));
         if (!map.containsKey("world") || !map.containsKey("pos1") || !map.containsKey("pos2")) {
             instance.getLogger().warning(name + " is missing 'world', 'pos1' or 'pos2'");
             return false;
@@ -55,7 +56,7 @@ public class GlobalBoundingFeature implements Feature {
     public BoundingFeature createFeature(Arena arena) {
         String name = arena.getName();
         ArenaConfig arenaConfig = instance.getArenaConfig();
-        Map<String, Object> map = arenaConfig.getNormalizedValues(name, false);
+        Map<String, Object> map = PathString.toPathMap(".", arenaConfig.getNormalizedValues(new PathString(name), false));
         String worldName = String.valueOf(map.get("world"));
         World world = Bukkit.getWorld(worldName);
         Location pos1 = getLocation(world, String.valueOf(map.get("pos1")));

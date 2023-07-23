@@ -11,6 +11,7 @@ import me.hsgamer.kingofthehill.manager.GameArenaManager;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class KingOfTheHill extends BasePlugin {
@@ -49,6 +50,11 @@ public final class KingOfTheHill extends BasePlugin {
         arenaManager.clear();
         disableList.forEach(Runnable::run);
         disableList.clear();
+    }
+
+    @Override
+    protected List<Class<?>> getPermissionClasses() {
+        return Collections.singletonList(Permissions.class);
     }
 
     public GameArenaManager getArenaManager() {
