@@ -27,3 +27,4 @@ jobs:
         secondary: target/*.jar
       env:
         DESCRIPTION: "KingOfTheHill"
+        GITHUB_TOKEN: ${{ github.token }}
