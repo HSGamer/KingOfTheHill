@@ -25,4 +25,6 @@ jobs:
       with:
         primary: target/KingOfTheHill.jar
         secondary: target/*.jar
+      env:
+        DESCRIPTION: "KingOfTheHill"
 
