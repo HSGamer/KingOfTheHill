@@ -20,9 +20,6 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Chmod to make the file accessible
-      run: chmod +x target/*.jar
-
     - name: Upload
       uses: HSGamer/MCReleaser@master
       with:
@@ -30,6 +27,3 @@ jobs:
         secondary: target/*.jar
       env:
         DESCRIPTION: "KingOfTheHill"
-        GITHUB_TOKEN: ${{ github.token }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
-        GITHUB_TAG: ${{ github.ref }}
