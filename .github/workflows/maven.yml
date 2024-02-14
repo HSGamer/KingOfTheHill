@@ -21,7 +21,7 @@ jobs:
       run: mvn -B package --file pom.xml
 
     - name: Chmod to make the file accessible
-      run: chmod +x target/KingOfTheHill.jar
+      run: chmod +x target/*.jar
 
     - name: Upload
       uses: HSGamer/MCReleaser@master
