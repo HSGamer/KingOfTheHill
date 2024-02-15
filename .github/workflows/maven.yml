@@ -23,8 +23,9 @@ jobs:
     - name: Upload
       uses: HSGamer/MCReleaser@master
       with:
-        primary: target/KingOfTheHill.jar
-        secondary: target/*.jar
+        files: |
+          target/KingOfTheHill.jar
+          secondary: target/*.jar
       env:
         DESCRIPTION: "KingOfTheHill"
         GITHUB_TOKEN: ${{ github.token }}
